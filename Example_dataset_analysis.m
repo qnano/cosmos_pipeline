@@ -121,24 +121,24 @@ gadObj.maximumlikelihood=false;
 gadObj.bayesSignalFitGMM;
 
 
-gadObj.prior.alpha = 1; 
-gadObj.prior.kappa = 40; 
-gadObj.prior.m = '[500 1000 1500 2000; 500 1000 1500 2000]'; 
-gadObj.prior.v = 10; 
-gadObj.prior.W = 10; 
-gadObj.NTimes = 2; 
-gadObj.NOrder= 4; 
-gadObj.maximumlikelihood=true;
-gadObj.bayesSignalFitGMM;
-
-% % 
-% % N=10;
-% % [meanDwellTimeBS,meanTime2FirstEventBS] = gadObj.bootStrapRastergram(N); %takes N times randomly 90% of the data
-% % 
-% % sortState=1;
-% % [meanDwellTimeBS,meanTime2FirstEventBS] = gadObj.bootStrapRastergram(N,sortState); %sort by state 1
+% gadObj.prior.alpha = 1; 
+% gadObj.prior.kappa = 40; 
+% gadObj.prior.m = '[500 1000 1500 2000; 500 1000 1500 2000]'; 
+% gadObj.prior.v = 10; 
+% gadObj.prior.W = 10; 
+% gadObj.NTimes = 2; 
+% gadObj.NOrder= 4; 
+% gadObj.maximumlikelihood=true;
+% gadObj.bayesSignalFitGMM;
 
 
-% gdcorObj.getCorrectedOnrate('cdf');
-% gdcorObj.getCorrectedOffrate('cdf');
+N=10;
+[meanDwellTimeBS,meanTime2FirstEventBS] = gadObj.bootStrapRastergram(N); %takes N times randomly 90% of the data
+
+sortState=1;
+[meanDwellTimeBS,meanTime2FirstEventBS] = gadObj.bootStrapRastergram(N,sortState); %sort by state 1
+
+
+gdcorObj.getCorrectedOnrate('cdf');
+gdcorObj.getCorrectedOffrate('cdf');
 

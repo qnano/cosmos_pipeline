@@ -380,6 +380,7 @@ classdef guiDarkCorrector < handle
             end
         end
         
+        set(0, 'currentfigure', ancestor(obj.Figure,'figure','toplevel'));
         warningMessage= false;
         
         if isfield(obj.handels,'histOffDarkPlot') && ~isempty(obj.handels.histOffDarkPlot)
@@ -468,6 +469,8 @@ classdef guiDarkCorrector < handle
             end
         end
         
+        set(0, 'currentfigure', ancestor(obj.Figure,'figure','toplevel'));
+
         [k_s_est,k_s_est_conf,k_ns_est, h_est, N_ns] = obj.getCorrectedOnrateFun;
 
         if isfield(obj.handels,'histOnDarkPlot') && ~isempty(obj.handels.histOnDarkPlot)
