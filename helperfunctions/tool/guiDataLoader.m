@@ -508,12 +508,16 @@ classdef guiDataLoader < handle
             a = bfopen( [ obj.fileStructure.Dark] );
             bg = double(cell2mat(permute(a{1}(1:min(100,end),1),[3 2 1])));
             
-            gellerCam2 = geller(1:512,1:512,:);
-            gellerCam1 = geller(1:512,513:1024,:);
+            gellerCam2 = geller(1:obj.fileStructure.imageDimensions(1),...
+                1:obj.fileStructure.imageDimensions(2),:);
+            gellerCam1 = geller(1:obj.fileStructure.imageDimensions(1),...
+                obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),:);
             clear geller
             
-            bgCam2 = bg(1:512,1:512,:);
-            bgCam1 = bg(1:512,513:1024,:);
+            bgCam2 = bg(1:obj.fileStructure.imageDimensions(1),...
+                1:obj.fileStructure.imageDimensions(2),:);
+            bgCam1 = bg(1:obj.fileStructure.imageDimensions(1),...
+                1:obj.fileStructure.imageDimensions(2),:);
             obj.bgMean = mean(bg,3);
             clear bg
             
@@ -582,9 +586,12 @@ classdef guiDataLoader < handle
             data = double(cell2mat(permute(a{1}(1:min(end,nFrames),1),[3 2 1])));
             
             data=(data-repmat(obj.bgMean,[1 1 size(data,3)]));
-         
-            obj.dataCam{4-obj.flipCams} = data(1:512,1:512,1:min(end,nFrames))*obj.outCam1(2); % swapped Cam1 and Cam2 - VS
-            obj.dataCam{3+obj.flipCams} = data(1:512,513:1024,1:min(end,nFrames))*obj.outCam2(2);   
+
+            obj.dataCam{4-obj.flipCams} = data(1:obj.fileStructure.imageDimensions(1),...
+                1:obj.fileStructure.imageDimensions(2),1:min(end,nFrames))*obj.outCam1(2); % swapped Cam1 and Cam2 - VS
+            obj.dataCam{3+obj.flipCams} = data(1:obj.fileStructure.imageDimensions(1),...
+                obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),...
+                1:min(end,nFrames))*obj.outCam2(2);   
             obj.loadedCal =1;
         end
          
@@ -597,8 +604,11 @@ classdef guiDataLoader < handle
                 clear a
                 data=(data-repmat(obj.bgMean,[1 1 size(data,3)]));
 
-                obj.dataCam{2-obj.flipCams} = data(1:512,1:512,1:min(end,nFrames))*obj.outCam1(2); % swapped Cam1 and Cam2 - VS
-                obj.dataCam{1+obj.flipCams} = data(1:512,513:1024,1:min(end,nFrames))*obj.outCam2(2);
+                obj.dataCam{2-obj.flipCams} = data(1:obj.fileStructure.imageDimensions(1),...
+                    1:obj.fileStructure.imageDimensions(2),1:min(end,nFrames))*obj.outCam1(2); % swapped Cam1 and Cam2 - VS
+                obj.dataCam{1+obj.flipCams} = data(1:obj.fileStructure.imageDimensions(1),...
+                    obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),...
+                    1:min(end,nFrames))*obj.outCam2(2);
                 clear data
 
                 if obj.flipCams

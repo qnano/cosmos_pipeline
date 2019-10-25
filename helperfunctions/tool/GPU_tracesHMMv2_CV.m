@@ -30,11 +30,14 @@ geller = double(cell2mat(permute(a{1}(1:min(100,end),1),[3 2 1])));
 a = bfopen( [pwd  fileStructure(1).Dark] );
 bg = double(cell2mat(permute(a{1}(1:min(100,end),1),[3 2 1])));
 
-gellerCam2 = geller(1:512,1:512,:); % swapped Cam1 and Cam2 - VS
-gellerCam1 = geller(1:512,513:1024,:);
+gellerCam2 = geller(1:obj.fileStructure.imageDimensions(1),...
+    1:obj.fileStructure.imageDimensions(2),:); % swapped Cam1 and Cam2 - VS
+gellerCam1 = geller(1:obj.fileStructure.imageDimensions(1),...
+    obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),:);
 
-bgCam2 = bg(1:512,1:512,:); % swapped Cam1 and Cam2 - VS
-bgCam1 = bg(1:512,513:1024,:);
+bgCam2 = bg(1:obj.fileStructure.imageDimensions(1),1:obj.fileStructure.imageDimensions(2),:); % swapped Cam1 and Cam2 - VS
+bgCam1 = bg(1:obj.fileStructure.imageDimensions(1),...
+    obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),:);
 
 outCam1 = cal_readnoise(gellerCam1, bgCam1);
 outCam2 = cal_readnoise(gellerCam2, bgCam2);
@@ -46,8 +49,11 @@ a = bfopen( [pwd  fileStructure(1).BeadData] );
 data = double(cell2mat(permute(a{1}(1:min(end,nFrames),1),[3 2 1])));
 data=(data-repmat(mean(bg,3),[1 1 size(data,3)]));
 
-beadDataCam2 = data(1:512,1:512,1:min(end,nFrames))*outCam1(2); % swapped Cam1 and Cam2 - VS
-beadDataCam1 = data(1:512,513:1024,1:min(end,nFrames))*outCam2(2);
+beadDataCam2 = data(1:obj.fileStructure.imageDimensions(1),...
+    1:obj.fileStructure.imageDimensions(2),1:min(end,nFrames))*outCam1(2); % swapped Cam1 and Cam2 - VS
+beadDataCam1 = data(1:obj.fileStructure.imageDimensions(1),...
+    obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),...
+    1:min(end,nFrames))*outCam2(2);
 
 %%
 PSFSigma=1.39;
@@ -57,8 +63,11 @@ a = bfopen( [pwd  fileStructure(1).Data] );
 data = double(cell2mat(permute(a{1}(1:min(end,nFrames),1),[3 2 1])));
 data=(data-repmat(mean(bg,3),[1 1 size(data,3)]));
 
-dataCam2 = data(1:512,1:512,1:min(end,nFrames))*outCam1(2); % swapped Cam1 and Cam2 - VS
-dataCam1 = data(1:512,513:1024,1:min(end,nFrames))*outCam2(2);
+dataCam2 = data(1:obj.fileStructure.imageDimensions(1),...
+    1:obj.fileStructure.imageDimensions(2),1:min(end,nFrames))*outCam1(2); % swapped Cam1 and Cam2 - VS
+dataCam1 = data(1:obj.fileStructure.imageDimensions(1),...
+    obj.fileStructure.imageDimensions(2)+1:2*obj.fileStructure.imageDimensions(2),...
+    1:min(end,nFrames))*outCam2(2);
 
 %% GLRT Based Detection
 
@@ -169,8 +178,10 @@ cpPointsUnMoved = transformPointsInverse(tformNoised,cpPoints(:,1:2));
 
 [idx, disttFormEst] = knnsearch(cpPointsMoved(:,1:2),cpPointsUnMoved);
 
-im1 = smooth(coord2image(cpPointsMoved(idx(disttFormEst<1),1:2),[512 512]),2);
-im2b = smooth(coord2image(cpPointsUnMoved(disttFormEst<1,:),[512 512]),2);
+im1 = smooth(coord2image(cpPointsMoved(idx(disttFormEst<1),1:2),...
+    [obj.fileStructure.imageDimensions(1) obj.fileStructure.imageDimensions(2)]),2);
+im2b = smooth(coord2image(cpPointsUnMoved(disttFormEst<1,:),...
+    [obj.fileStructure.imageDimensions(1) obj.fileStructure.imageDimensions(2)]),2);
 dipshow(joinchannels('RGB',squeeze(im1),squeeze(im2b)))
 
 
